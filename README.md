@@ -1,17 +1,14 @@
-Z-cw
+CEST_EVAL
 ============
 
 - unzip all files in the package
 - load the whole folder into the matlab path
 - run sections step by step
-- first section: set up the parameters truct P. P contains all system and sequence parameters.
-- second section: call and plot Z_cw(P), it calculates the Z-spectrum and returns it as a vector.
-- third section: Call and plot for multiple parameters
 
 
-Date: 2014/08/01 
+Date: 2016/02/10 
 Version for CEST-sources.de
-uthor: Moritz Zaiss  - m.zaiss@dkfz.de
+Authors: Moritz Zaiss  - m.zaiss@dkfz.de , Johannes Windschuh
 Divison of Medical Physics in Radiology
 German Cancer Research Center (DKFZ), Heidelberg Germany, http://www.dkfz.de/en/index.html
  CEST sources - Copyright (C) 2014  Moritz Zaiss
