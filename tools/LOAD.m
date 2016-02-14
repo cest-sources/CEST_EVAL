@@ -21,8 +21,12 @@ P.EVAL.w_interp=P.SEQ.w;
 % for more sophisticated M0 change here, now first image is used
 if (ndims(M_nosat_stack)==4)
     M0_stack=fitM0(double(M_nosat_stack),P);
+    
+%    M0_stack=double(M0_stack(:,:,:,IX)); % added to bring to the same order as Mz_stack
+
 else
     M0_stack=double(M_nosat_stack);
 end
+
 
 

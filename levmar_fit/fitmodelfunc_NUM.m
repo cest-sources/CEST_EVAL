@@ -79,7 +79,7 @@ ub = [ max_y   0.04     50      0.0   ];
 p0 = [ max_y   0.02     25     -2.0   ];
 fitfunc = 'gaussfit1pool';
 
-elseif P.FIT.modelnum == 012011 %2  % corrected 5.9.2013
+elseif P.FIT.modelnum == 012011 || P.FIT.modelnum == 2 %2  % corrected 5.9.2013
 %% 2pool
 
    %   Zi        A0     G0[ppm]      dw0           A1           G1[ppm]     dw1                                                             
@@ -110,7 +110,7 @@ ub = [ 1.5          max_y               15              br              max_y   
 p0 = [ max_y+0.1    (max_y-min_y)/2     dMs             w_axe(min_x)    0.02        0.4                         w_axe(min_x)+2.2  ];
 fitfunc = 'lorentzfit_REX2pool';
 
-elseif P.FIT.modelnum == 013011 %3   %  % corrected 5.9.2013
+elseif P.FIT.modelnum == 013011 || P.FIT.modelnum == 3%3   %  % corrected 5.9.2013
 %% 3pool
 
    %   Zi       A0      G0[ppm]  dw0     A1      G1[ppm]   dw1      A2      G2      dw2
@@ -140,7 +140,7 @@ ub = [ 1        1       2           0.8      8      0.4     100       0 ];
 p0 = [ 1        0.8     1           0.5      3      0.1     50       -2 ];
 fitfunc = 'lorentzdoublefit3pool';
 
-elseif P.FIT.modelnum == 014011 %4   %  % installed 4.9.2013 corrected 9.9.2013
+elseif P.FIT.modelnum == 014011 || P.FIT.modelnum == 4%4   %  % installed 4.9.2013 corrected 9.9.2013
 %% 4pool
 
 %       1    2           3      4       5           6       7 
@@ -162,7 +162,7 @@ ub = [ 1.0   1.00      10.0      +1    0.3         6.0     5.0     0.2    7     
 p0 = [ 1.0   0.90       0.8       0    0.1         2.0     3.5     0.1    4      -3.5       0.01     2      2.2    0.5 ];
 fitfunc = 'lorentzfit4pool_BW';
 
-elseif P.FIT.modelnum == 015011 %5   %  % installed 6.9.2013 corrected 24.9.2013
+elseif P.FIT.modelnum == 015011 || P.FIT.modelnum == 5%5   %  % installed 6.9.2013 corrected 24.9.2013
 %% 5pool
 
 %      Zi   A0          G0          dw0         A1          G1     dw1     A2      G2      dw2   AMT     GMT      dwMT          A3       G3      dw3                                                                     
@@ -204,7 +204,7 @@ ub = [ 1    1          10           +1          0.2         3       +4      0.4 
 p0 = [ 1    0.9        1.4          0           0.025      0.5     3.5     0.02     3    -3.5    0.1     25      -2            0.01      1.5     2.2   0.5 ];
 fitfunc = 'lorentzfit5pool_BW';
 
-elseif P.FIT.modelnum == 016011 %6
+elseif P.FIT.modelnum == 016011 || P.FIT.modelnum == 6%6
 %% 6pool
                                          
 %      1    2           3           4           5           6       7      8       9       10    11      12       13            14       15      1

@@ -1,5 +1,5 @@
 %%
-addpath(genpath('../CEST_EVAL_2'))
+addpath(genpath(cd('.')))
 %%
 clear all; close all; clc
 
@@ -13,11 +13,11 @@ clear Z Mz_stack M0_stack Mz_CORR
 [imagesOut, ParsOut] = read_rec_file('filename.REC'); % cd to recpar folder and adjust filename
 size(imagesOut)
 for ii=1:size(imagesOut,3)
-Z(:,:,1,ii)=squeeze(imagesOut(1,1,ii,1,1,:,:)); % adjust dimensions if needed, here its x,y,z,w
+S(:,:,1,ii)=squeeze(imagesOut(1,1,ii,1,1,:,:)); % adjust dimensions if needed, here its x,y,z,w
 end;
 
-M0_stack=Z(:,:,1,1);        % first image is unsaturated M0 image, adjust if necessary
-Mz_stack=Z(:,:,1,2:end-1);  % all the others are the saturated images
+M0_stack=S(:,:,1,1);        % first image is unsaturated M0 image, adjust if necessary
+Mz_stack=S(:,:,1,2:end-1);  % all the others are the saturated images
 P.SEQ.w=linspace(-5,5,18)'; % give offsets manually
 
 % some parameters the routines need later

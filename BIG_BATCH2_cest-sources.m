@@ -23,11 +23,12 @@ clear all; close all; clc
 
 %% LOAD CEST-DATA
 [M0_stack, Mz_stack, P] = LOAD('USER');
-
+% dimensions: M0_stack(x,y,z) or M0_stack(x,y,z,w) ;  Mz_stack(x,y,z,w) ;
+% make sure they are double; offets (deltaomega in ppm) are stored in P.SEQ.w
 %% DEFINE 2D Segment of ones and NaNs
 
 % this creates the mask Segment, with values between [0 0.05] and within the defined free shaped ROI
-Segment= make_Segment(M0_stack, 'free', mean(M0_stack(M0_stack>0)).*[0.5]); 
+Segment= make_Segment(M0_stack, 'free', mean(M0_stack(M0_stack>0)).*[0.3]); 
 
 %% WASSR1 EVAL
 [dB0_stack_ext yS] = MINFIND_SPLINE_3D(Mz_stack,Segment,P);
@@ -42,40 +43,43 @@ P.EVAL.w_fit = min(P.SEQ.w):0.01:max(P.SEQ.w);
 %% correct data for dB0 with internal B0-map from the measurement
 [Mz_CORR ] = B0_CORRECTION(Mz_stack,dB0_stack_int,P,Segment);
 
-%% Normalize uncorrected data
-[Z_corrExt] = NORM_ZSTACK(Mz_stack,M0_stack,P,Segment);
+%% Normalize uncorrected data and B0 corrected data
+[Z_uncorr] = NORM_ZSTACK(Mz_stack,M0_stack,P,Segment);
 
-%% Normalize B0 corrected data
 [Z_corrExt] = NORM_ZSTACK(Mz_CORR,M0_stack,P,Segment);
 
 
 %% save
-save matlab_fitted.mat ;
+save matlab.mat ;
 
 %% start imgui
-imgui
+close(imgui); imgui
 
-%% Fitting
-tic
+%% Multi-Lorentzian fitting
+
 P.FIT.options   = [1E-04, 1E-15, 1E-10, 1E-04, 1E-06];
 P.FIT.nIter     = 50;
-P.FIT.modelnum  = 015013;               %% possible: 2 = 2pool, 3 = 3pool, 99 = 4pool, 5 = 5pool, 4 = doepfert, 11 = WASSR
+P.FIT.modelnum  = 5;     %% number of Lorentzian pools (possible 1-5)
 
 P.FIT.extopt=1; % change parameters explicitly
-lb = [ 0.5  0.02       0.3          -1          0.0         0.4     +3      0.0    1     -4.5    0.0    10      -4             0.0       1       1   ];
-ub = [ 1    1          10           +1          0.2         3       +4      0.4    5     -2        1    100     -1              0.2      3.5     2.5 ];
-p0 = [ 1    0.9        1.4          0           0.025      0.5     3.5     0.02     3    -3.5    0.1     25      -1            0.01      1.5     2.2 ];
-P.FIT.lower_limit_fit = lb;
-P.FIT.upper_limit_fit = ub;
-P.FIT.start_fit = p0;
+%Lorentzian line LI defined by amplitude Ai, width Gi [ppm] and offset dwi[ppm]: Li=Ai.*Gi^2/4./ (Gi^2/4+(dw-dwi).^2) ;
+%1=water; 2=amide; 3=NOE; 4=MT; 5=amine
+%const.Zi   A1    G1    dw1     A2     G2    dw2     A3    G3   dw3     A4    G4   dw4    A3    G3   dw3
+lb = [ 0.5  0.02  0.3  -1       0.0    0.4   +3     0.0    1    -4.5    0.0   10   -4     0.0   1    1   ];
+ub = [ 1    1     10   +1       0.2    3     +4     0.4    5    -2        1   100  -1     0.2   3.5  2.5 ];
+p0 = [ 1    0.9   1.4   0       0.025  0.5   3.5     0.02   3    -3.5    0.1   25   -1     0.01  1.5  2.2 ];
+P.FIT.lower_limit_fit = lb; P.FIT.upper_limit_fit = ub; P.FIT.start_fit = p0;
 
-[popt, P] = FIT_3D(Z_corrExt,P,Segment);
+Segment= make_Segment(M0_stack, 'free', mean(M0_stack(M0_stack>0)).*[0.3]); % choose smalle ROI for testing
+close all
+
+tic
+[popt, P] = FIT_3D(Z_corrExt,P,Segment); % perform the fit pixelwise
 toc
 
+[Zlab, Zref] = get_FIT_LABREF(popt,P,Segment);  % create Reference values Z_Ref=(Z_lab - Li)
 
-[Zlab, Zref] = get_FIT_LABREF(popt,P,Segment);
-
-
+imgui
 
 %% WASSR2/WASAB1 EVAL
 [M0_stack, Mz_stack, P] = LOAD('USER');

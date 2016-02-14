@@ -58,6 +58,7 @@ handles.shift=0;
 
 handles.P = evalin('base','P');
 
+ set(gcf,'OuterPosition', [-20 -20 740 540]);
 
 try
     handles.P.FIT.modelnum
@@ -222,7 +223,7 @@ function popupmenu1_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-set(hObject, 'String', {'Zspec', 'T1map [s]','B1map', 'dB0map [ppm]','M0_stack','extContrast'});
+set(hObject, 'String', {'Zspec', 'Zspec_uncorr', 'T1map [s]','B1map', 'dB0map [ppm]','M0_stack','extContrast'});
 
 
 % --- Executes on selection change in popupmenu1.
@@ -237,29 +238,33 @@ handles.slice=get(handles.slider9, 'Value');
 
 switch popup_sel_index
     case 1 % Stack=Z_corrExt
+        handles.Z_corrExt= evalin('base','Z_corrExt');
         handles.Stack = handles.Z_corrExt;
-    case 2
+    case 2 % Stack=Z_uncorr
+        handles.Z_corrExt= evalin('base','Z_uncorr');
+        handles.Stack = handles.Z_corrExt;
+    case 3
         handles.Stack=double(handles.T1map);
         set(handles.slider6,'Value',1);
         set(handles.slider9,'Value',1);
         handles.slice=1;
         handles.freq_pos=1;
-    case 3
+    case 4
         handles.Stack=double(handles.B1map);
         set(handles.slider6,'Value',1);
         set(handles.slider9,'Value',1);
         handles.slice=1;
         handles.freq_pos=1;
-    case 4
+    case 5
         handles.Stack=double(handles.dB0_stack);
         set(handles.slider6,'Value',1);
         handles.freq_pos=1;
-    case 5
+    case 6
         handles.Stack=double(handles.M0_stack);
         set(handles.slider6,'Value',1);
         set(handles.slider9,'Value',1);
         handles.freq_pos=1;
-    case 6
+    case 7
         if (handles.extContrastflag==1)
             if (ndims(handles.extContrast)==2)
                 handles.Stack(:,:,1,1)=double(handles.extContrast);

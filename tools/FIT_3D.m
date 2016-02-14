@@ -31,7 +31,7 @@ tmpzspec=zeros(N_offsets,1);
 [P] = fitmodelfunc_NUM(tmpzspec,P);
 popt=NaN(mysize(1),mysize(2),mysize(3),P.FIT.nparams);
 
-if ( nargin == 4 && ~(islogical(StartValues)) )
+if ( exist('StartValues','var')>0 && ~(islogical(StartValues)) )
         P.FIT.start_fit = StartValues;
 end
 
@@ -82,7 +82,7 @@ if ( exist('Composite')>0 && strcmp(P.FIT.fitfunc,'T1recovery_biex') )
                         tmpzspec_c(:,1)=squeeze(Stack_c(i,j,k,:));
 %                         in case data dependent startvalues/boundaries are chosen
                         [P_c] = fitmodelfunc_NUM(tmpzspec,P_c);
-                        if ( nargin == 4 && ~(islogical(StartValues)) )
+                        if ( exist('StartValues','var')>0 && ~(islogical(StartValues)) )
                                 P_c.FIT.start_fit = StartValues;    
                         end
                         
@@ -146,7 +146,7 @@ else  %not parallel
                     
                     [P] = fitmodelfunc_NUM(tmpzspec,P);
             
-                    if ( nargin == 4 && ~(islogical(StartValues)) )
+                    if ( exist('StartValues','var')>0 && ~(islogical(StartValues)) )
                         % case of normal startvalue vector
                         if ndims(StartValues)==1 
                             P.FIT.start_fit = StartValues;
