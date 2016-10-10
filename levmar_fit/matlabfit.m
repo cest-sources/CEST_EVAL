@@ -74,23 +74,29 @@ fitable_func =@(x,w,Z) feval(fitfunc,x, w, P)';
 % fit-options
 matlab_options = optimset('TolFun',options(4),'TolX',options(3), 'MaxIter',nIter,'Display','off');
 
-try
-[popt resnorm RES,EXITFLAG,OUTPUT,LAMBDA,JACOBIAN] = lsqcurvefit(fitable_func,p0,w,M,lb,ub,matlab_options);
-
-[ci, varb, corrb, varinf] = nlparci(popt,RES,JACOBIAN,0.95);
-ci(:,1) = ci(:,1)-popt';
-ci(:,2) = ci(:,2)-popt';
-ret=EXITFLAG;
-info=OUTPUT;
-covar=corrb;
-
-catch
     ret=-1;
     info=0;
     covar=0;
     popt=0;
+    
+try
+[popt resnorm RES,EXITFLAG,OUTPUT,LAMBDA,JACOBIAN] = lsqcurvefit(fitable_func,p0,w,M,lb,ub,matlab_options);
+ret=EXITFLAG;
+info=OUTPUT;
+catch
+    warning('lsqrfit retrned with an error');
+ end;
 
+try
+[ci, varb, corrb, varinf] = nlparci(popt,RES,JACOBIAN,0.95);
+ci(:,1) = ci(:,1)-popt';
+ci(:,2) = ci(:,2)-popt';
+covar=corrb;
 end;
+
+
+
+
 
 
 

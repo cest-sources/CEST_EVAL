@@ -16,8 +16,14 @@ if (ndims(Segment)==2 && mysize(3)>1)
     end
 end
 
+ext_op=1;
+if nargin<4
+    ext_op=0;
+end;
+
 % case of no explicit startvalues in function is dealt with in voxel loop
 % further down
+
 
 
 % allocation
@@ -31,7 +37,7 @@ tmpzspec=zeros(N_offsets,1);
 [P] = fitmodelfunc_NUM(tmpzspec,P);
 popt=NaN(mysize(1),mysize(2),mysize(3),P.FIT.nparams);
 
-if ( exist('StartValues','var')>0 && ~(islogical(StartValues)) )
+if ext_op
         P.FIT.start_fit = StartValues;
 end
 
@@ -42,7 +48,7 @@ if (strcmp(P.FIT.fitfunc,'WASABIFIT') || strcmp(P.FIT.fitfunc,'WASABIFIT_2') )
     LOOKUP{2}=bib_entries;
 end
 
-if ( exist('Composite')>0 && strcmp(P.FIT.fitfunc,'T1recovery_biex') )
+if license('test', 'distrib_computing_toolbox')
     
  
     % Spread Matritzes on labs
@@ -82,7 +88,8 @@ if ( exist('Composite')>0 && strcmp(P.FIT.fitfunc,'T1recovery_biex') )
                         tmpzspec_c(:,1)=squeeze(Stack_c(i,j,k,:));
 %                         in case data dependent startvalues/boundaries are chosen
                         [P_c] = fitmodelfunc_NUM(tmpzspec,P_c);
-                        if ( exist('StartValues','var')>0 && ~(islogical(StartValues)) )
+                        
+                        if ext_op
                                 P_c.FIT.start_fit = StartValues;    
                         end
                         
@@ -146,14 +153,8 @@ else  %not parallel
                     
                     [P] = fitmodelfunc_NUM(tmpzspec,P);
             
-                    if ( exist('StartValues','var')>0 && ~(islogical(StartValues)) )
-                        % case of normal startvalue vector
-                        if ndims(StartValues)==1 
-                            P.FIT.start_fit = StartValues;
-                         % case of B1map guess (if ever necesairy again)
-                        elseif ndims(StartValues)==2
-                            P.FIT.start_fit = StartValues(i,j);
-                        end 
+                    if ext_op
+                        P.FIT.start_fit = StartValues;   
                     end
                     
                     % perform lookup in lookuptable, here startvalues and
@@ -162,13 +163,7 @@ else  %not parallel
                         [P]=perform_lookup(LOOKUP,tmpzspec,P);
                     end
                     
-                    if (strcmp(P.FIT.fitfunc,'T1recovery_biex') && ~(islogical(StartValues)) )
-                        P.FIT.lower_limit_fit(1:3) = StartValues(i,j,k,:);
-                        P.FIT.upper_limit_fit(1:3) = StartValues(i,j,k,:);
-                        P.FIT.start_fit=p0;
-                        P.FIT.start_fit(1:3) = StartValues(i,j,k,:);
-                    end
-                    
+                                 
                     % all information about startvalues/bounds is saved in
                     % P struct
                     [popt(i,j,k,:)]  = levmar_fit(tmpzspec,P);
