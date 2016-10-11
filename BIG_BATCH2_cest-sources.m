@@ -104,6 +104,28 @@ B1map=popt(:,:,1)/P.SEQ.B1;
 %%
 save B0_B1.mat ;
 
+%% B1 correction
+%you need to copy the files form https://github.com/cest-sources/B1_correction to your path
+
+n=1;
+%% B1 correction step1: create 5D Z_stack
+% dimensions of Z_Stack : x,y,z,w,B1
+Z_stack(:,:,:,:,n)=Z_corrExt; %% do this for all B1 measurements
+n=n+1;
+
+%% B1 correction step2: run correction -rqures relative B1_map
+tic % etwa 100s
+B1_input=[0.3 0.6 0.8]; % give the nominal B1 values set at the scanner
+B1_output=[0.3 0.4 0.6 0.7 0.8]; % choose which values you want to reconstruct, e.g. B1_output=[ 1 2 ], or B1_output=B1_input
+[Z_stack_corr] = Z_B1_correction(Z_stack,B1map,B1_input,B1_output,Segment,'linear');
+% [Z_stack_corr] = Z_B1_correction(Z_stack,B1_map,B1_input,B1_output,Segment);
+toc
+
+Z_corrExt=Z_stack_corr(:,:,:,:,2); % pick second reconstructed value (e.g. 2 for B1_output(2)=0.4µT) 
+
+imgui
+
+
 %% T1 mapping
 TI=[100 200 400 600 800 1000 1300 1600 2000 2500 3000 3500 4000 4500 5000 10000 15000];
 
