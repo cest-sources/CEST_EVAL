@@ -69,7 +69,11 @@ function [ret, popt, info, covar] = matlabfit(fitfunc, p0, M, nIter, options,bou
 
 [w, M] = prepareCurveData(w, M );
 
-fitable_func =@(x,w,Z) feval(fitfunc,x, w, P)';
+if strcmp(fitfunc,'T1recovery') || strcmp(fitfunc,'T1recovery_biex')
+    fitable_func =@(x,w,Z) feval(fitfunc,x, w, P);
+else
+    fitable_func =@(x,w,Z) feval(fitfunc,x, w, P)';
+end
 
 % fit-options
 matlab_options = optimset('TolFun',options(4),'TolX',options(3), 'MaxIter',nIter,'Display','off');
