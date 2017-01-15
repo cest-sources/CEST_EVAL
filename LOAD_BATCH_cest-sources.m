@@ -37,9 +37,9 @@ clearvars -except  P Mz_stack M0_stack image_z x X ROI_def Segment dB0_stack_ext
 
 directory = uigetdir;
 protocol = readprotocol(directory);
-Mz_name = 'unito_cestRARE_1uT';
-M0_name = 'unito_cestRARE_M0';
+Mz_name = 'example_sequence_description';
+M0_name = 'example_sequence_description';
 [directory_Mz, directory_M0] = getfolderpath(directory, protocol, Mz_name, M0_name);
 Mz_stack = load_Mz(directory_Mz);
 M0_stack = load_M0(directory_M0);
-P = wipread_modified(directory_Mz, directory_M0, Mz_stack, M0_stack);
+P = wipread_modified(directory_Mz, directory_M0);   % writes all parameters into P structure
