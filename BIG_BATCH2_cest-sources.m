@@ -22,6 +22,7 @@ addpath(genpath(cd('.')))
 clear all; close all; clc
 
 %% LOAD CEST-DATA
+% for Philips or Bruker data, use 'LOAD_BATCH_cest-sources' script
 [M0_stack, Mz_stack, P] = LOAD('USER');
 % dimensions: M0_stack(x,y,z) or M0_stack(x,y,z,w) ;  Mz_stack(x,y,z,w) ;
 % make sure they are double; offets (deltaomega in ppm) are stored in P.SEQ.w
@@ -48,10 +49,6 @@ P.EVAL.w_fit = min(P.SEQ.w):0.01:max(P.SEQ.w);
 
 [Z_corrExt] = NORM_ZSTACK(Mz_CORR,M0_stack,P,Segment);
 
-
-%% save
-save matlab.mat ;
-
 %% start imgui
 close(imgui); imgui
 
@@ -70,7 +67,7 @@ ub = [ 1    1     10   +1       0.2    3     +4     0.4    5    -2        1   10
 p0 = [ 1    0.9   1.4   0       0.025  0.5   3.5     0.02   3    -3.5    0.1   25   -1     0.01  1.5  2.2 ];
 P.FIT.lower_limit_fit = lb; P.FIT.upper_limit_fit = ub; P.FIT.start_fit = p0;
 
-Segment= make_Segment(M0_stack, 'free', mean(M0_stack(M0_stack>0)).*[0.3]); % choose smalle ROI for testing
+% Segment= make_Segment(M0_stack, 'free', mean(M0_stack(M0_stack>0)).*[0.3]); % choose smalle ROI for testing
 close all
 
 tic
@@ -79,13 +76,19 @@ toc
 
 [Zlab, Zref] = get_FIT_LABREF(popt,P,Segment);  % create Reference values Z_Ref=(Z_lab - Li)
 
-imgui
+close(imgui); imgui
+
+%% save
+save matlab.mat ;
 
 %% WASSR2/WASAB1 EVAL
+% Warning: will overwrite variables Mz_stack, P, Segment, etc.
+
+% for Philips or Bruker data, use 'LOAD_BATCH_cest-sources' script
 [M0_stack, Mz_stack, P] = LOAD('USER');
 
 %%
-Segment= make_Segment(M0_stack, 'free', mean(M0_stack(M0_stack>0)).*[0.20]); 
+% Segment= make_Segment(M0_stack, 'free', mean(M0_stack(M0_stack>0)).*[0.20]); 
 [Z_uncorr] = NORM_ZSTACK(Mz_stack,M0_stack,P,Segment);
 
 tic
@@ -97,10 +100,10 @@ P.FIT.modelnum  = 021021; % 021011 = WASAB1
 toc
 
 B1map=popt(:,:,1)/P.SEQ.B1;
- dB0_stack_ext=popt(:,:,2);
+dB0_stack_ext=popt(:,:,2);
 
- figure, subplot(1,2,1), imagesc(dB0_stack_ext(:,:,1),[-0.9 0.9]); title('\DeltaB0 map in ppm');
-         subplot(1,2,2), imagesc(B1map,[0.6 1.4]); title('relative B1 map');
+figure, subplot(1,2,1), imagesc(dB0_stack_ext(:,:,1),[-0.9 0.9]); title('\DeltaB0 map in ppm'); colorbar;
+        subplot(1,2,2), imagesc(B1map,[0.6 1.4]); title('relative B1 map'); colorbar;
 %%
 save B0_B1.mat ;
 
@@ -113,32 +116,51 @@ n=1;
 Z_stack(:,:,:,:,n)=Z_corrExt; %% do this for all B1 measurements
 n=n+1;
 
+% for Bruker data (where inputs are sequence descriptions of B1 measurements):
+Z_stack = make_5D_B1_stack(protocol, directory_M0, M0_stack, Segment, 'example_B1seqDescr_1', 'example_B1seqDesc_2');
+
 %% B1 correction step2: run correction -rqures relative B1_map
 tic % etwa 100s
+
 B1_input=[0.3 0.6 0.8]; % give the nominal B1 values set at the scanner
+% or, for Bruker:
+% B1_input = get_protocol_B1_values(directory, protocol, 'example_B1seqDescr_1', 'example_B1seqDesc_2');
+
 B1_output=[0.3 0.4 0.6 0.7 0.8]; % choose which values you want to reconstruct, e.g. B1_output=[ 1 2 ], or B1_output=B1_input
+
 [Z_stack_corr] = Z_B1_correction(Z_stack,B1map,B1_input,B1_output,Segment,'linear');
 % [Z_stack_corr] = Z_B1_correction(Z_stack,B1_map,B1_input,B1_output,Segment);
 toc
 
-Z_corrExt=Z_stack_corr(:,:,:,:,2); % pick second reconstructed value (e.g. 2 for B1_output(2)=0.4µT) 
+Z_corrExt=Z_stack_corr(:,:,:,:,2); % pick second reconstructed value (e.g. 2 for B1_output(2)=0.4?T) 
 
-imgui
+% See WASABI spectrum (choose map 'Z_uncorr')
+close(imgui); imgui
 
 
 %% T1 mapping
 TI=[100 200 400 600 800 1000 1300 1600 2000 2500 3000 3500 4000 4500 5000 10000 15000];
 
-% TI=[20:20:100  200 400 600 800 1000 1200 1400 1600 1800 2000 2500 3000 3500 4000 4500 5000 10000 ];
+% for Bruker: make folder with T1 image DICOM files and change DICOM header
+ix_T1 = 7:12;   % protocol entry numbers of T1 images
+T1dirpath = make_T1_directory(directory, protocol, TI, ix_T1)
 
 % information about fit
 P_T1.FIT.options   = [1E-04, 1E-15, 1E-10, 1E-04, 1E-06];
 P_T1.FIT.nIter     = 100;
 P_T1.FIT.modelnum  = 031011;
-P_T1.SEQ.w = TI;
-% number of ROIS, mapflag (should complete T1map be calculated), P_T1 struct, Segment
+P_T1.SEQ.w = TI';
 
-[T1info T1map popt_T1] = T1eval_levmar(1,2,P_T1);
+% starting parameters (optional)
+%     T1          a      c
+lb = [0         -5000   0       ];
+ub = [50000      5000   5000    ];
+p0 = [1000      -2000   1000    ];
+P_T1.FIT.lower_limit_fit = lb; P_T1.FIT.upper_limit_fit = ub; P_T1.FIT.start_fit = p0;
+StartValues=p0;
+
+% mapflag (should complete T1map be calculated), number of ROIS, P_T1 struct, Segment
+[T1info T1map popt_T1] = T1eval_levmar(1,1,P_T1,Segment,StartValues);
 
 
 

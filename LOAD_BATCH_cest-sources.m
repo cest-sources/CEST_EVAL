@@ -27,10 +27,19 @@ P.SEQ.stack_dim=size(Mz_stack);
 P.EVAL.lowerlim_slices=1;
 P.EVAL.upperlim_slices=size(M0_stack,3);
 clearvars -except  P Mz_stack M0_stack image_z x X ROI_def Segment dB0_stack_ext dB0_stack_int
- 
 
+%% LOAD Bruker CEST-DATA
+% Given the patient directory, makes a 'protocol' structure containing
+% sequence names/descriptions (set by you at the scanner) and their
+% respective directory name (the sequence number, according to Bruker's
+% "E[n]" naming convention). Make sure sequence descriptions are
+% informative.
 
-
-
-
-
+directory = uigetdir;
+protocol = readprotocol(directory);
+Mz_name = 'example_sequence_description';
+M0_name = 'example_sequence_description';
+[directory_Mz, directory_M0] = getfolderpath(directory, protocol, Mz_name, M0_name);
+Mz_stack = load_Mz(directory_Mz);
+M0_stack = load_M0(directory_M0);
+P = wipread_modified(directory_Mz, directory_M0);   % writes all parameters into P structure
