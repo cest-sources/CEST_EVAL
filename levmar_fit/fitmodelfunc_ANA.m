@@ -259,7 +259,7 @@ elseif (strcmp(modelname,'lorentzfit6pool'))
     
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-elseif (strcmp(modelname,'lorentzfit6pool_BW')) % fügt einen Lorentz ein, der ein plateau der breite BW hat
+elseif (strcmp(modelname,'lorentzfit6pool_BW')) % f?gt einen Lorentz ein, der ein plateau der breite BW hat
     fZi=@(k) k*0+A(1) ;
     f1=@(k) L0_BW(A(1:4),A(20),k);
     f2=@(k) A(5).*A(6).^2/4./ (A(6).^2/4+(k-A(7)).^2) ;
@@ -282,7 +282,7 @@ elseif (strcmp(modelname,'lorentzfit6pool_BW')) % fügt einen Lorentz ein, der ei
 elseif ( strcmp(modelname,'WASABIFIT') )
     
     freq=P.SEQ.FREQ;
-    t_p=P.SEQ.tp/(1E6);
+    t_p=P.SEQ.tp;
     B1=A(1);
     offset=A(2);
     c=A(3);
@@ -294,7 +294,7 @@ elseif ( strcmp(modelname,'WASABIFIT') )
 elseif  ( strcmp(modelname,'WASABIFIT_2') )
       
     freq=P.SEQ.FREQ;
-    t_p=P.SEQ.tp/(1E6);
+    t_p=P.SEQ.tp;
     B1=A(1);
     offset=A(2);
     c=A(3);
