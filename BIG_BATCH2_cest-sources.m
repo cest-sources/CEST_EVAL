@@ -117,7 +117,7 @@ Z_stack(:,:,:,:,n)=Z_corrExt; %% do this for all B1 measurements
 n=n+1;
 
 % for Bruker data (where inputs are sequence descriptions of B1 measurements):
-Z_stack = make_5D_B1_stack(protocol, directory_M0, M0_stack, Segment, 'example_B1seqDescr_1', 'example_B1seqDesc_2')
+Z_stack = make_5D_B1_stack(protocol, directory_M0, M0_stack, Segment, 'example_B1seqDescr_1', 'example_B1seqDesc_2');
 
 %% B1 correction step2: run correction -rqures relative B1_map
 tic % etwa 100s
@@ -151,8 +151,16 @@ P_T1.FIT.nIter     = 100;
 P_T1.FIT.modelnum  = 031011;
 P_T1.SEQ.w = TI';
 
+% starting parameters (optional)
+%     T1          a      c
+lb = [0         -5000   0       ];
+ub = [50000      5000   5000    ];
+p0 = [1000      -2000   1000    ];
+P_T1.FIT.lower_limit_fit = lb; P_T1.FIT.upper_limit_fit = ub; P_T1.FIT.start_fit = p0;
+StartValues=p0;
+
 % mapflag (should complete T1map be calculated), number of ROIS, P_T1 struct, Segment
-[T1info T1map popt_T1] = T1eval_levmar(1,0,P_T1,Segment);
+[T1info T1map popt_T1] = T1eval_levmar(1,1,P_T1,Segment,StartValues);
 
 
 
