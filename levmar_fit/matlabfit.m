@@ -81,6 +81,8 @@ matlab_options = optimset('TolFun',options(4),'TolX',options(3), 'MaxIter',nIter
     
 try
     [popt resnorm RES,EXITFLAG,OUTPUT,LAMBDA,JACOBIAN] = lsqcurvefit(fitable_func,p0,w,M,lb,ub,matlab_options);
+    ret=EXITFLAG;
+    info=OUTPUT;
 catch ME
     warning('lsqrfit returned with an error');
     ME
