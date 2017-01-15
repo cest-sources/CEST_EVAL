@@ -22,7 +22,11 @@ end
 % read images from folder
 cd(uigetdir)
 listoffiles=dir('*.IMA');
-numfiles=size(listoffiles,1);
+% added CT 20161212
+if isempty(listoffiles,1)
+    listoffiles=dir('*.dcm');
+end
+numfiles=numel(listoffiles);
 
 for i=1:numfiles
     filect=listoffiles(i).name;
@@ -50,13 +54,13 @@ end
 
 if mapflag
     
-    [popt, P] = FIT_3D(image,P,Segment,StartValues);
+    [popt, P] = FIT_3D(double(image),P,Segment,StartValues);
     T1map=popt(:,:,:,1);
     
     figure,
     for ii=1:size(image,3)
         subplot(1,size(image,3),ii);
-        imagesc(T1map(:,:,ii),[0 5000]);
+        imagesc(T1map(:,:,ii),[0 50000]);
         axis image
         set(gca,'xtick',[])
         set(gca,'ytick',[])
