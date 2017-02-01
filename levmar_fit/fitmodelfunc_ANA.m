@@ -120,11 +120,10 @@ elseif ( strcmp(modelname,'lorentzfit3pool') )
     %superposmodel
     %lorentzfit: x(k)= 1 - p(1)*p(2)/(p(2)+(i-p(3))^2) - p(4)*p(5)/(p(5)+(i-p(6))^2) - p(7)*p(8)/(p(8)+(i-p(9))^2) - p(10);
     f=@(k)  fZi(k)-f1(k)-f2(k)-f3(k);
-    g=@(k)  fZi(k)-f1(k)-f3(k);
-    g2=@(k) fZi(k)-f1(k)-f3(k);
-    g3=@(k) fZi(k)-f1(k)-f3(k);
-    g4=@(k) fZi(k)-f1(k)-f3(k);
-    g5=@(k) fZi(k)-f1(k)-f3(k);
+    g=@(k) fZi(k)-f1(k)-f3(k);
+    g2=@(k) fZi(k)-f1(k)      -f3(k);
+    g3=@(k) fZi(k)-f1(k)-f2(k)      ;
+    
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%    
     
@@ -137,11 +136,10 @@ elseif ( strcmp(modelname,'lorentzfit3pool_BW') )
     %superposmodel
     %lorentzfit: x(k)= 1 - p(1)*p(2)/(p(2)+(i-p(3))^2) - p(4)*p(5)/(p(5)+(i-p(6))^2) - p(7)*p(8)/(p(8)+(i-p(9))^2) - p(10);
     f=@(k)  fZi(k)-f1(k)-f2(k)-f3(k);
-    g=@(k)  fZi(k)-f1(k)-f3(k);
-    g2=@(k) fZi(k)-f1(k)-f3(k);
-    g3=@(k) fZi(k)-f1(k)-f3(k);
-    g4=@(k) fZi(k)-f1(k)-f3(k);
-    g5=@(k) fZi(k)-f1(k)-f3(k);
+    g=@(k) fZi(k)-f1(k)-f3(k);
+    g2=@(k) fZi(k)-f1(k)      -f3(k);
+    g3=@(k) fZi(k)-f1(k)-f2(k)      ;
+   
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -154,11 +152,11 @@ elseif ( strcmp(modelname,'lorentzdoublefit3pool') )
     %lorentzfit: x(k)= p(1) - p(2)*p(3).^2/4./(p(3).^2/4.+(i-p(4))^2) - p(5).*exp(-(k-p(4))^2/(p(6)/(2*sqrt(log(2))))^2) - p(7)*p(8).^2/4./(p(8).^2/4.+(i-p(9))^2);
 
     f=@(k)  fZi(k)-f1(k)-f2(k)-f3(k);
-    g=@(k)  fZi(k)-f1(k)-f3(k);
-    g2=@(k) fZi(k)-f1(k)-f3(k);
-    g3=@(k) fZi(k)-f1(k)-f3(k);
-    g4=@(k) fZi(k)-f1(k)-f3(k);
-    g5=@(k) fZi(k)-f1(k)-f3(k);
+    g=@(k) fZi(k)-f1(k)-f3(k);
+    g2=@(k) fZi(k)-f1(k)      -f3(k);
+    g3=@(k) fZi(k)-f1(k)-f2(k)      ;
+    
+   
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -259,7 +257,7 @@ elseif (strcmp(modelname,'lorentzfit6pool'))
     
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-elseif (strcmp(modelname,'lorentzfit6pool_BW')) % fügt einen Lorentz ein, der ein plateau der breite BW hat
+elseif (strcmp(modelname,'lorentzfit6pool_BW')) % fÃ¼gt einen Lorentz ein, der ein plateau der breite BW hat
     fZi=@(k) k*0+A(1) ;
     f1=@(k) L0_BW(A(1:4),A(20),k);
     f2=@(k) A(5).*A(6).^2/4./ (A(6).^2/4+(k-A(7)).^2) ;
