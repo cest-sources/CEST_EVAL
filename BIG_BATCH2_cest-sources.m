@@ -84,8 +84,13 @@ imgui
 %% WASSR2/WASAB1 EVAL
 [M0_stack, Mz_stack, P] = LOAD('USER');
 
-%%
-Segment= make_Segment(M0_stack, 'free', mean(M0_stack(M0_stack>0)).*[0.20]); 
+%% WASAB1 EVAL
+%  two variable are required: 
+%  P.SEQ.tp must be the wasabi pulse in us. e.g 5000
+%  P.SEQ.FREQ must be the scanner frequency in MHz, e.g. 123.
+% for best performance open the file lookuptable_WASABI and modify the lookuptable range and sampling
+Segment= make_Segment(M0_stack, 'poly', mean(M0_stack(M0_stack>0)).*[0.20]); 
+
 [Z_uncorr] = NORM_ZSTACK(Mz_stack,M0_stack,P,Segment);
 
 tic

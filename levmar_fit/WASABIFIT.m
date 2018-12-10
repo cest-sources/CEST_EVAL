@@ -3,7 +3,7 @@ function x = WASABIFIT(p, data,P)
 
 % data1, data2 are actually unused
 freq=P.SEQ.FREQ;
-t_p=P.SEQ.tp;
+t_p=P.SEQ.tp*10^-6; %  us to s
 
 x=zeros(1,n);
   for k=1:n

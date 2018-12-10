@@ -1,7 +1,7 @@
 function [WASABI_bib, bib_entries] = lookuptable_WASABI(P)
 
 tic
-
+% define lookuptable here:
 B1_bib=[0.5:0.05:1.5]*P.SEQ.B1;
 offset_bib=[-0.9:0.025:0.9];
 c_bib=[0.6:0.1:0.9];
