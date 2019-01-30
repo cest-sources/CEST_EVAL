@@ -140,6 +140,15 @@ ub = [ 1        1       2           0.8      8      0.4     100       0 ];
 p0 = [ 1        0.8     1           0.5      3      0.1     50       -2 ];
 fitfunc = 'lorentzdoublefit3pool';
 
+elseif P.FIT.modelnum == 013041 % MTR_LD fitting
+%% 3pool MTR_LD
+   %   c       A0    G0[ppm]  dw0     A1      G1[ppm]  dw1     A2      G2      dw2       
+lb = [ 0        0     0.1     3      0.0       0.1     1.8     0.0     0.1    -4    ];
+ub = [ 0.2      0.2   2.0     4	     0.2       3       2.2     0.2     2      -3    ];
+%startwert der parameter 3 pool
+p0 = [ 0        0.05   1.0    3.5    0.05       1      2.0     0.1     1      -3.5  ];
+fitfunc = 'LD_lorentzfit3pool';
+
 elseif P.FIT.modelnum == 014011 || P.FIT.modelnum == 4%4   %  % installed 4.9.2013 corrected 9.9.2013
 %% 4pool
 

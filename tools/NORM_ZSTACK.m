@@ -2,7 +2,7 @@ function Z=NORM_ZSTACK(Mz_stack,M0_stack,P,Segment,type)
 
 
 if nargin<5
-    type='M0'
+    type='M0';
 end;
 
 if ismatrix(Segment)
@@ -22,12 +22,13 @@ M0_stack_4D=ones(sizeMz);
 switch type
     case 'M0'
         
-        for ii=1:P.SEQ.stack_dim(4)
+        for ii=1:numel(P.SEQ.w)
             if (ndims(M0_stack)<4)
-                M0_stack_4D(:,:,:,ii)=M0_stack.*Segment_3D;
+                M0_stack_4D(:,:,:,ii)=M0_stack;
             else
-                M0_stack_4D(:,:,:,ii)=M0_stack(:,:,:,ii).*Segment_3D;
+                M0_stack_4D(:,:,:,ii)=M0_stack(:,:,:,ii);
             end
+            Mz_stack(:,:,:,ii)=Mz_stack(:,:,:,ii).*Segment_3D;
         end;
         
     case 'baseline'
