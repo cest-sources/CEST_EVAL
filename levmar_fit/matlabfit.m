@@ -69,7 +69,7 @@ function [ret, popt, info, covar] = matlabfit(fitfunc, p0, M, nIter, options,bou
 
 [w, M] = prepareCurveData(w, M );
 
-fitable_func =@(x,w,Z) feval(fitfunc,x, w, P)';
+fitable_func =@(x,w,Z) feval(fitfunc,x, w(:), P);
 
 % fit-options
 matlab_options = optimset('TolFun',options(4),'TolX',options(3), 'MaxIter',nIter,'Display','off');
@@ -80,7 +80,7 @@ matlab_options = optimset('TolFun',options(4),'TolX',options(3), 'MaxIter',nIter
     popt=0;
     
 try
-[popt resnorm RES,EXITFLAG,OUTPUT,LAMBDA,JACOBIAN] = lsqcurvefit(fitable_func,p0,w,M,lb,ub,matlab_options);
+[popt resnorm RES,EXITFLAG,OUTPUT,LAMBDA,JACOBIAN] = lsqcurvefit(fitable_func,p0,w(:),M(:),lb,ub,matlab_options);
 ret=EXITFLAG;
 info=OUTPUT;
 catch
