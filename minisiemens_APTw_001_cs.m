@@ -19,8 +19,6 @@ Segment = M0_stack>mean(M0_stack(:));
 %4.2. B0 correction: splinesmoothing parameter
 
 %% offsets from dcm
-filename='W:\radiologie\data\MR-Physik\Mitarbeiter\Sedykh\816C\P01_01.12.22\dcm\GRE_CEST_816C_APTW_001_SLABSEL_LOWRES_0022'
-filename=fullfile(filename,'MO_HAORAN.MR.HEAD_LIBRARY.0022.0001.2022.12.01.15.02.20.595716.55212639.IMA');
 offsets=offsets_from_dcm();
 M0_offset=offsets(1);
 P.SEQ.w=offsets(2:end);
