@@ -21,14 +21,23 @@ addpath(genpath(cd('.')))
 %%
 clear all; close all; clc
 
-%% LOAD CEST-DATA
-[M0_stack, Mz_stack, P] = LOAD('USER');
+%% LOAD CEST-DATA - see loadbacth for hints how to load data
+% we assume that you have the normalization stack M0
+% the saturated  stack Mz
+% and the parameter struct P containing
+P.SEQ.w= [-5:0.25:5];
+P.EVAL.w_interp=P.SEQ.w;
+P.SEQ.stack_dim=size(Mz_stack);
+
+if ~exist('M0_stack') || ~exist('Mz_stack') || ~exist('P')|| ~isfield(P.SEQ,'w')|| ~isfield(P.EVAL,'w_interp')
+    errordlg('missing data');
+end;
+
 % dimensions: M0_stack(x,y,z) or M0_stack(x,y,z,w) ;  Mz_stack(x,y,z,w) ;
 % make sure they are double; offets (deltaomega in ppm) are stored in P.SEQ.w
 %% DEFINE 2D Segment of ones and NaNs
-
-% this creates the mask Segment, with values between [0 0.05] and within the defined free shaped ROI
-Segment= make_Segment(M0_stack, 'free', mean(M0_stack(M0_stack>0)).*[0.3]); 
+% this creates the mask Segment
+Segment= M0_stack>0.2*mean(M0_stack(:)); 
 
 %% WASSR1 EVAL
 [dB0_stack_ext yS] = MINFIND_SPLINE_3D(Mz_stack,Segment,P);
@@ -82,14 +91,14 @@ toc
 imgui
 
 %% WASSR2/WASAB1 EVAL
-[M0_stack, Mz_stack, P] = LOAD('USER');
+%load for WASABI M0_stack, Mz_stack, P
 
 %% WASAB1 EVAL
 %  two variable are required: 
 %  P.SEQ.tp must be the wasabi pulse in us. e.g 5000
 %  P.SEQ.FREQ must be the scanner frequency in MHz, e.g. 123.
 % for best performance open the file lookuptable_WASABI and modify the lookuptable range and sampling
-Segment= make_Segment(M0_stack, 'poly', mean(M0_stack(M0_stack>0)).*[0.20]); 
+Segment= M0_stack>0.2*mean(M0_stack(:)); 
 
 [Z_uncorr] = NORM_ZSTACK(Mz_stack,M0_stack,P,Segment);
 

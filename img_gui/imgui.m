@@ -189,8 +189,8 @@ set(handles.slider6,'Max',numel(handles.x_Zspec_ppm))
 set(handles.slider6,'SliderStep',[1/(numel(handles.x_Zspec_ppm)-1) 1/(numel(handles.x_Zspec_ppm)-1)]);
 set(handles.slider6,'Value',1);
 
-u=handles.P.EVAL.upperlim_slices;
-l=handles.P.EVAL.lowerlim_slices;
+u=handles.P.SEQ.stack_dim(3);
+l=1;
 if l>=u u=l+1; end;
 set(handles.slider9,'Max',u-l+1);
 set(handles.slider9,'Min',1);

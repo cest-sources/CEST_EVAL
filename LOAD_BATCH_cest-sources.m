@@ -3,6 +3,15 @@ addpath(genpath(cd('.')))
 %%
 clear all; close all; clc
 
+%% manual load of converted nii (only in newer Matlab version):
+%use mricron etc. to turn yoru dicoms into a 4D nii
+M_stack=niftiread(uigetfile('*.*'));
+M0_stack=M_stack(:,:,:,1);
+Mz_stack=M_stack(:,:,:,2:end);
+P.SEQ.w= [-6:0.1:6];
+P.EVAL.w_interp=P.SEQ.w;
+P.SEQ.stack_dim=size(Mz_stack);
+
 %% LOAD Siemens CEST-DATA
 [M0_stack, Mz_stack, P] = LOAD('USER'); % thats quite automized, good luck
 

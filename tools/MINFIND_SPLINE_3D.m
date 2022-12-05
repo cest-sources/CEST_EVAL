@@ -145,7 +145,7 @@ else  %not parallel
                     tmpzspec(:,1)=squeeze(Stack_single(i,j,k,:));
                     
                     if fittoolboxflag
-                        cf_ = fit(x_Zspec_ppm,tmpzspec,ft_,fo_);
+                        cf_ = fit(x_Zspec_ppm(:),tmpzspec(:),ft_,fo_);
                         %yS(i,j,k,:)= cf_(x_Zspec_ppm);
                         yS(i,j,k,:)= cf_(P.SEQ.w);
                         yfit(i,j,k,:)=cf_(xfit);
