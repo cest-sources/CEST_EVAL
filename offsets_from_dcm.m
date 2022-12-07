@@ -1,4 +1,4 @@
-function [offsets]=offsets_from_dcm(filename)
+function [offsets,FREQ]=offsets_from_dcm(filename)
 
 if nargin<1
    [FileName,PathName]= uigetfile('*.*','choose dicome file');
@@ -26,9 +26,9 @@ newStr=newStr(2:end-1);
 offsets = cellfun(@(x) str2num(x), newStr);
 
 % FREQ
-freq_str = split(freq_str,'=');freq_str=freq_str{2}; freq=str2num(freq_str)/10^6;
+freq_str = split(freq_str,'=');freq_str=freq_str{2}; FREQ=str2num(freq_str)/10^6;
 
 % offset ppm
-offsets=offsets./freq;
+offsets=offsets./FREQ;
 
 

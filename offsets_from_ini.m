@@ -8,7 +8,7 @@ end
 str = fileread(filename);
 
 % Define the regular expression
-regex = 'cestoffset\[\d+\]\s*=\s*([\d\.]+)';
+regex = 'Offset\[\d+\]\s*=\s*([+-]?[\d\.]+)';
 % Extract the values of cestoffset
 match = regexp(str, regex, 'tokens')
 offsets = str2double([match{:}])
