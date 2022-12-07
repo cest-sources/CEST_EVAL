@@ -56,3 +56,5 @@ subplot(1,2,1),montage1t(MTRasym35,[-0.05 0.05]);
 colormap(gca,RAINBOW)
 subplot(1,2,2), montage1t(MTRasym35,[-0.03 0.05]);
 colormap(gca,RAINBOW)
+
+figure, plot(P.SEQ.w, squeeze(Z_corrExt(end/2,end/2,end/2,:)),'x'); title('Z-spectrum of the central voxel');
