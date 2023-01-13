@@ -9,4 +9,6 @@ function x = lorentzfit3pool(p, data, P)
 
   end
   
- 
+ if ~isequal(size(x),size(data))
+      x = x.';
+  end
